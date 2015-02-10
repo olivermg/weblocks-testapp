@@ -48,17 +48,20 @@
     (:link :rel "stylesheet" :type "text/css" :href "/pub/stylesheets/bootstrap.css")))
 |#
 
+#|
 (defun ow-page-body-wt (&key body-string &allow-other-keys)
   (with-html-to-string
     (:div :class "container"
-	  (render-extra-tags "page-extra-top-" 3)
+	  ;(render-extra-tags "page-extra-top-" 3)
 	  (cl-who:htm (cl-who:str body-string))
-	  (render-extra-tags "page-extra-bottom-" 3))))
+	  ;(render-extra-tags "page-extra-bottom-" 3)
+	  )))
 
 (weblocks-util:deftemplate :page-body-wt 'ow-page-body-wt
   :context-matches (lambda (&rest context)
 		     (declare (ignore context))
 		     10))
+|#
 
 ;; Define callback function to initialize new sessions
 (defun init-user-session (root)
@@ -79,7 +82,31 @@
 	   (with-html
 	     (:strong "Happy Hacking!")))
 	 |#
+	 (lambda () (with-html
+		      (render-message
+		       (if (authenticatedp)
+			   "LOGGED IN!"
+			   "LOGGED OUT!")
+		       *authentication-key*)))
+
 	 (make-instance 'counter)
+
+	 (lambda () (with-html
+		      (if (authenticatedp)
+			  (render-link
+			   (lambda (&rest args)
+			     (declare (ignore args))
+			     (logout)
+			     (mark-dirty root))
+			   "Logout")
+			  (render-link
+			   (lambda (&rest args)
+			     (declare (ignore args))
+			     (do-login (lambda (obj &rest args)
+					 (declare (ignore obj args))
+					 13241325)))
+			   "Login"))))
+
 	 (make-instance 'datalist
 			:data-class 'recipe))))
 
