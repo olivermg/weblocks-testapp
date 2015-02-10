@@ -20,6 +20,9 @@
     :init-user-session 'wl-owtest01::init-user-session
     :autostart nil                   ;; have to start the app manually
     :ignore-default-dependencies nil ;; accept the defaults
+    :dependencies '((:stylesheet "bootstrap")
+		    (:script "jquery.min")
+		    (:js "jQuery.noConflict();"))
     :debug t
     )
 
